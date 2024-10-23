@@ -10,11 +10,11 @@ app.use(cors({
 
 // Ensure the API responds with JSON
 app.get('/api/test', (req, res) => {
-  res.setHeader('Content-Type', 'application/json'); // Ensure content type is JSON
-  res.json({ message: 'Hello from the Express API!', timestamp: new Date() }); // Return JSON data
+  res.setHeader('Content-Type', 'application/json'); // Set content type to JSON
+  res.json({ message: 'Hello from the Express API!', timestamp: new Date() }); // Return a JSON response
 });
 
 // Start the server
 app.listen(port, '0.0.0.0', () => {
-  console.log(`Example app listening at http://0.0.0.0:${port}`);
+  console.log(`Server running at http://0.0.0.0:${port}`);
 });
