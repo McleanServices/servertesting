@@ -42,10 +42,16 @@ connection.connect((err) => {
 app.get('/api/user', (req, res) => {
   connection.query('SELECT * FROM users LIMIT 1', (err, results) => {
     if (err) {
+      console.error('Database query error:', err);
       res.status(500).send('Error fetching user');
     } else {
       res.json(results[0]);  // Return the first user
     }
   });
 });
+
+
+
+
+
 
