@@ -1,24 +1,17 @@
 const express = require('express');
-const cors = require('cors'); // Import CORS
+const cors = require('cors');
 const app = express();
 const port = 80;
 
-// Use CORS middleware
-
+// Use CORS middleware to allow requests from all origins (for testing purposes)
 app.use(cors({
-  origin: '*', // Allow all origins (for testing purposes)
+  origin: '*',
 }));
 
-
-// Simple GET endpoint
-// app.get('/api/test', (req, res) => {
-//   const response = { message: 'Hello from the Express API!', timestamp: new Date() };
-//   console.log('Sending Response:', response);
-//   res.json(response);
-// });
-
+// Corrected GET endpoint to return JSON
 app.get('/api/test', (req, res) => {
-  res.json({ message: 'Hello from the Express API!', timestamp: new Date() });
+  res.setHeader('Content-Type', 'application/json'); // Ensure content type is JSON
+  res.json({ message: 'Hello from the Express API!', timestamp: new Date() }); // Return JSON data
 });
 
 // Start the server
