@@ -1,5 +1,7 @@
 const express = require('express');
 const cors = require('cors');
+const mysql = require('mysql2');
+
 const app = express();
 const port = 80;
 
@@ -14,33 +16,20 @@ app.get('/api/test', (req, res) => {
   res.json({ message: 'Hello from the Express API!', timestamp: new Date() }); // Return a JSON response
 });
 
-// Start the server
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Server running at http://0.0.0.0:${port}`);
-});
-
-const mysql = require('mysql2');
-
-// Create connection to your Hostinger database
-const connection = mysql.createConnection({
-  host: 'srv1267.hstgr.io',  // E.g., 'localhost' or a remote host
+// Create a connection pool to your Hostinger database
+const pool = mysql.createPool({
+  host: 'srv1267.hstgr.io', // E.g., 'localhost' or a remote host
   user: 'u175541833_expotest',
   password: 'oFnEl;P2',
-  database: 'u175541833_expotest'
-});
-
-// Connect to the database
-connection.connect((err) => {
-  if (err) {
-    console.error('Error connecting to the database:', err);
-    return;
-  }
-  console.log('Connected to the database.');
+  database: 'u175541833_expotest',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
 // Create an API route to fetch a user
 app.get('/api/user', (req, res) => {
-  connection.query('SELECT * FROM users LIMIT 1', (err, results) => {
+  pool.query('SELECT * FROM users LIMIT 1', (err, results) => {
     if (err) {
       console.error('Database query error:', err);
       res.status(500).send('Error fetching user');
@@ -50,8 +39,16 @@ app.get('/api/user', (req, res) => {
   });
 });
 
+// Start the server
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server running at http://0.0.0.0:${port}`);
+});
 
-
-
-
-
+// Connect to the database pool (optional, for logging)
+pool.getConnection((err) => {
+  if (err) {
+    console.error('Error connecting to the database pool:', err);
+  } else {
+    console.log('Connected to the database pool.');
+  }
+});
