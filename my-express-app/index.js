@@ -12,8 +12,11 @@ app.use(cors({
 
 // Simple GET endpoint
 app.get('/api/test', (req, res) => {
-  res.json({ message: 'Hello from the Express API!', timestamp: new Date() });
+  const response = { message: 'Hello from the Express API!', timestamp: new Date() };
+  console.log('Sending Response:', response);
+  res.json(response);
 });
+
 
 // Start the server
 app.listen(port, '0.0.0.0', () => {
