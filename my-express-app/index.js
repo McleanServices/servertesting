@@ -23,7 +23,7 @@ const mysql = require('mysql2');
 
 // Create connection to your Hostinger database
 const connection = mysql.createConnection({
-  host: 'localhost',  // E.g., 'localhost' or a remote host
+  host: 'srv1267.hstgr.io',  // E.g., 'localhost' or a remote host
   user: 'u175541833_expotest',
   password: 'oFnEl;P2',
   database: 'u175541833_expotest'
