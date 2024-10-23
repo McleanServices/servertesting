@@ -8,7 +8,7 @@ app.use(cors({
   origin: '*',
 }));
 
-// Corrected GET endpoint to return JSON
+// Ensure the API responds with JSON
 app.get('/api/test', (req, res) => {
   res.setHeader('Content-Type', 'application/json'); // Ensure content type is JSON
   res.json({ message: 'Hello from the Express API!', timestamp: new Date() }); // Return JSON data
