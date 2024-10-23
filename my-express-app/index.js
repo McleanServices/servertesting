@@ -4,7 +4,11 @@ const app = express();
 const port = 80;
 
 // Use CORS middleware
-app.use(cors());
+
+app.use(cors({
+  origin: '*', // Allow all origins (for testing purposes)
+}));
+
 
 // Simple GET endpoint
 app.get('/api/test', (req, res) => {
