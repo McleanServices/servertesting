@@ -1,5 +1,5 @@
 const express = require('express');
-const mysql = require('mysql');
+const mysql = require('mysql2');  // Changed to mysql2
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const jwt = require('jsonwebtoken'); // Assuming you are using JWT for login
