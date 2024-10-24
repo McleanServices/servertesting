@@ -65,6 +65,35 @@ app.post('/user/login', (req, res) => {
   });
 });
 
+app.get('/user/account', (req, res) => {
+    const token = req.headers['authorization'];
+
+    if (!token) {
+        return res.status(401).json({ message: 'No token provided' });
+    }
+
+    jwt.verify(token, SECRET_KEY, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ message: 'Invalid token' });
+        }
+
+        const query = 'SELECT id, username FROM users WHERE id = ?';
+        pool.query(query, [decoded.id], (err, result) => {
+            if (err) {
+                console.error('Database query error:', err);
+                return res.status(500).json({ message: 'Database error' });
+            }
+
+            if (result.length === 0) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+
+            res.json(result[0]);
+        });
+    });
+});
+
+
 // Start the server
 app.listen(port, '0.0.0.0', () => {
   console.log(`Server running at http://0.0.0.0:${port}`);
