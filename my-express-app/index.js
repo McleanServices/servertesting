@@ -22,7 +22,7 @@ app.use(bodyParser.json());
 
 const SECRET_KEY = "0192837465123456789";  // Make sure to keep this secure
 
-app.use(express.json());
+// app.use(express.json());
 
 // MySQL connection
 // const db = mysql.createConnection({
@@ -42,13 +42,7 @@ const db = mysql.createPool({
     queueLimit: 0
   });
 
-db.connect((err) => {
-    if (err) {
-        console.error('Error connecting to MySQL:', err);
-        return;
-    }
-    console.log('Connected to MySQL');
-});
+
 
 // Login API endpoint
 // app.post('/user/login', (req, res) => {
@@ -171,6 +165,6 @@ app.get('/user/account', (req, res) => {
     });
 });
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
     console.log(`Server running on port ${port}`);
 });
