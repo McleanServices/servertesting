@@ -1,103 +1,43 @@
 const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
-
 const cors = require('cors');
-
-
-
-// Middleware
- // Enable CORS for all routes
-
+const jwt = require('jsonwebtoken'); // Assuming you are using JWT for login
 
 const app = express();
 const port = 80;
 
 app.use(cors({
     origin: '*',
-  }));
+}));
 
-// Middleware
 app.use(bodyParser.json());
 
 const SECRET_KEY = "0192837465123456789";  // Make sure to keep this secure
 
-// app.use(express.json());
-
-// MySQL connection
-// const db = mysql.createConnection({
-//     host: 'localhost',
-//     user: 'root',
-//     password: '',
-//     database: 'test'
-// });
-
+// MySQL connection pool
 const db = mysql.createPool({
-    host: 'srv1267.hstgr.io', // E.g., 'localhost' or a remote host
+    host: 'srv1267.hstgr.io', 
     user: 'u175541833_expotest',
     password: 'oFnEl;P2',
     database: 'u175541833_expotest',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
-  });
+});
 
+// No need to use db.connect() when using connection pool
 
-
-// Login API endpoint
-// app.post('/user/login', (req, res) => {
-//     const { username, password } = req.body;
-
-//     const user = result[0];
-
-//     if (!username || !password) {
-//         return res.status(400).json({ message: 'Username and password are required' });
-//     }
-
-//     const query = 'SELECT * FROM users WHERE username = ? AND password = ?';
-//     db.query(query, [username, password], (err, results) => {
-//         if (err) {
-//             console.error('Error executing query:', err);
-//             return res.status(500).json({ message: 'Internal server error' });
-//         }
-
-//         if (results.length > 0) {
-//             res.json({ message: 'Login successful' });
-//         } else {
-//             res.status(401).json({ message: 'Invalid username or password' });
-//         }
-
-
-//     });
-
-//     const token = jwt.sign(
-//         { id: user.id},
-//         SECRET_KEY,
-//         { expiresIn: '1h' }  // Token expires in 1 hour
-//     );
-
-//     // Return token and user data
-//     res.json({
-//         token,
-//         user: { id: user.id }
-//     });
-
-
-
-// });
-
+// Register API endpoint
 app.post("/register", (req, res) => {
-    const {username,firstName, lastName, email, password, phoneNumber, dateOfBirth } = req.body;
-      // Use email as the username
+    const { username, firstName, lastName, email, password, phoneNumber, dateOfBirth } = req.body;
 
-    // Validate input
     if (!username || !firstName || !lastName || !email || !password || !phoneNumber || !dateOfBirth) {
         return res.status(400).json({ message: "Please fill in all fields." });
     }
 
-    const createdAt = new Date(); // Get the current date and time
+    const createdAt = new Date();
 
-    // Insert the new user into the database without hashing the password
     const query = `
         INSERT INTO users (username, password, email, created_at, first_name, last_name, phone_number, date_of_birth)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -113,13 +53,10 @@ app.post("/register", (req, res) => {
     });
 });
 
-
-
-
+// Login API endpoint
 app.post('/user/login', (req, res) => {
     const { username, password } = req.body;
 
-    // Sample user lookup
     const query = 'SELECT * FROM users WHERE username = ?';
     db.query(query, [username], (err, result) => {
         if (err) return res.status(500).json({ message: 'Database error' });
@@ -127,19 +64,16 @@ app.post('/user/login', (req, res) => {
 
         const user = result[0];
 
-        // Directly compare stored password with provided password
         if (user.password !== password) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        // Generate token and send response
         const token = jwt.sign({ id: user.id }, SECRET_KEY, { expiresIn: '1h' });
         res.json({ token, userId: user.id });
     });
 });
 
-
-
+// Account details API (using JWT token)
 app.get('/user/account', (req, res) => {
     const token = req.headers['authorization'];
 
@@ -165,6 +99,7 @@ app.get('/user/account', (req, res) => {
     });
 });
 
+// Start the server
 app.listen(port, '0.0.0.0', () => {
     console.log(`Server running on port ${port}`);
 });
