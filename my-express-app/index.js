@@ -17,10 +17,16 @@ app.use(bodyParser.json());
 const SECRET_KEY = "0192837465123456789";
 
 // Ensure the API responds with JSON
+// app.get('/api/test', (req, res) => {
+//   res.setHeader('Content-Type', 'application/json'); // Set content type to JSON
+//   res.json({ message: 'Hello from the Express API!', timestamp: new Date() }); // Return a JSON response
+// });
+
 app.get('/api/test', (req, res) => {
-  res.setHeader('Content-Type', 'application/json'); // Set content type to JSON
-  res.json({ message: 'Hello from the Express API!', timestamp: new Date() }); // Return a JSON response
+  res.setHeader('Content-Type', 'application/json');
+  res.status(200).json({ message: 'Hello from the Express API!', timestamp: new Date() });
 });
+
 
 // Create a connection pool to your Hostinger database
 const pool = mysql.createPool({
