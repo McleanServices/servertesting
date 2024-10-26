@@ -1,11 +1,20 @@
 const express = require('express');
+const https = require('https'); // Import the https module
+const fs = require('fs'); // Import the fs module to read files
 const cors = require('cors');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser'); // Import body-parser
 const jwt = require('jsonwebtoken'); // Make sure to import jwt if using it
 
 const app = express();
-const port = 80;
+const port = 443; // Default HTTPS port
+
+// Load your SSL certificate and key
+const options = {
+  key: fs.readFileSync('/root/my_ssl_certificates/mykey.pem'), // Path to your private key
+  cert: fs.readFileSync('/root/my_ssl_certificates/mycert.pem'), // Path to your certificate
+};
+
 
 // Use CORS middleware to allow requests from all origins (for testing purposes)
 app.use(cors({
@@ -17,16 +26,10 @@ app.use(bodyParser.json());
 const SECRET_KEY = "0192837465123456789";
 
 // Ensure the API responds with JSON
-// app.get('/api/test', (req, res) => {
-//   res.setHeader('Content-Type', 'application/json'); // Set content type to JSON
-//   res.json({ message: 'Hello from the Express API!', timestamp: new Date() }); // Return a JSON response
-// });
-
 app.get('/api/test', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.status(200).json({ message: 'Hello from the Express API!', timestamp: new Date() });
 });
-
 
 // Create a connection pool to your Hostinger database
 const pool = mysql.createPool({
@@ -38,18 +41,6 @@ const pool = mysql.createPool({
   connectionLimit: 10,
   queueLimit: 0
 });
-
-// Create an API route to fetch a user
-// app.get('/api/user', (req, res) => {
-//   pool.query('SELECT * FROM users LIMIT 1', (err, results) => {
-//     if (err) {
-//       console.error('Database query error:', err);
-//       res.status(500).send('Error fetching user');
-//     } else {
-//       res.json(results[0]);  // Return the first user
-//     }
-//   });
-// });
 
 // Login API endpoint
 app.post('/user/login', (req, res) => {
@@ -99,10 +90,9 @@ app.get('/user/account', (req, res) => {
     });
 });
 
-
-// Start the server
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Server running at http://0.0.0.0:${port}`);
+// Start the HTTPS server
+https.createServer(options, app).listen(port, '0.0.0.0', () => {
+  console.log(`Server running at https://0.0.0.0:${port}`);
 });
 
 // Connect to the database pool (optional, for logging)
