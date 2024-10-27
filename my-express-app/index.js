@@ -11,8 +11,8 @@ const port = 3000; // Default HTTPS port
 
 // Load your SSL certificate and key
 const options = {
-  key: fs.readFileSync('/root/my_ssl_certificates/mykey.pem'), // Path to your private key
-  cert: fs.readFileSync('/root/my_ssl_certificates/mycert.pem'), // Path to your certificate
+  key: fs.readFileSync('/etc/letsencrypt/live/keigonwilson.com/privkey.pem'), // Path to your private key
+  cert: fs.readFileSync('/etc/letsencrypt/live/keigonwilson.com/fullchain.pem'), // Path to your certificate
 };
 
 
