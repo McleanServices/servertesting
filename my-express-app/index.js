@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 
 const app = express();
-const port = 3000; // Change to an HTTP port, like 3000
+const port = 80; // Change to an HTTP port, like 3000
 
 // Use CORS middleware to allow requests from all origins (for testing purposes)
 app.use(cors({
