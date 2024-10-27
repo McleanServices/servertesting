@@ -7,7 +7,7 @@ const bodyParser = require('body-parser'); // Import body-parser
 const jwt = require('jsonwebtoken'); // Make sure to import jwt if using it
 
 const app = express();
-const port = 443; // Default HTTPS port
+const port = 3000; // Default HTTPS port
 
 // Load your SSL certificate and key
 const options = {
