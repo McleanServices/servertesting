@@ -1,11 +1,20 @@
 const express = require('express');
+const https = require('https'); // Import the https module
+const fs = require('fs'); // Import the fs module to read files
 const cors = require('cors');
 const mysql = require('mysql2');
-const bodyParser = require('body-parser');
-const jwt = require('jsonwebtoken');
+const bodyParser = require('body-parser'); // Import body-parser
+const jwt = require('jsonwebtoken'); // Make sure to import jwt if using it
 
 const app = express();
-const port = 80; // Change to an HTTP port, like 3000
+const port = 443; // Default HTTPS port
+
+// Load your SSL certificate and key
+const options = {
+  key: fs.readFileSync('/root/my_ssl_certificates/mykey.pem'), // Path to your private key
+  cert: fs.readFileSync('/root/my_ssl_certificates/mycert.pem'), // Path to your certificate
+};
+
 
 // Use CORS middleware to allow requests from all origins (for testing purposes)
 app.use(cors({
@@ -24,13 +33,13 @@ app.get('/api/test', (req, res) => {
 
 // Create a connection pool to your Hostinger database
 const pool = mysql.createPool({
-  host: 'srv1267.hstgr.io', // Your database host
+  host: 'srv1267.hstgr.io', // E.g., 'localhost' or a remote host
   user: 'u175541833_expotest',
   password: 'oFnEl;P2',
   database: 'u175541833_expotest',
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0,
+  queueLimit: 0
 });
 
 // Login API endpoint
@@ -81,10 +90,11 @@ app.get('/user/account', (req, res) => {
     });
 });
 
-// Start the HTTP server
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Server running at http://0.0.0.0:${port}`);
+// Start the HTTPS server
+https.createServer(options, app).listen(port, '0.0.0.0', () => {
+  console.log(`Server running at https://0.0.0.0:${port}`);
 });
+
 
 // Connect to the database pool (optional, for logging)
 pool.getConnection((err) => {
